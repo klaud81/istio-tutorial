@@ -3,7 +3,9 @@
 
 
 # remote repo add and push
-git remote add origin https://github.com/claud-kim/istio-tutorial.git
+
 
 git push -u origin master
+
+# https://www.katacoda.com/courses/istio/deploy-istio-on-kubernetes
 
