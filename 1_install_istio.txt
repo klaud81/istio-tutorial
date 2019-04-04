@@ -1,0 +1,7 @@
+## downlod and install 
+
+curl -L https://github.com/istio/istio/releases/download/0.5.1/istio-0.5.1-linux.tar.gz -o istio-linux.tar.gz 
+tar xvfz istio-linux.tar.gz
+
+
+
