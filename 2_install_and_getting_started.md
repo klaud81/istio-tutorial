@@ -2,7 +2,9 @@
 # 기본 설치 및 준비사항들
 
 ref:  https://riptutorial.com/ko/openshift/example/30544/minishift-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0
+
 or
+
 https://github.com/redhat-developer-demos/istio-tutorial/blob/master/documentation/modules/ROOT/pages/1setup.adoc
 
 
