@@ -122,6 +122,32 @@ oc get pods
 cd ..
 ./source_downlod.sh
 
+oc new-project tutorial
+oc adm policy add-scc-to-user privileged -z default -n tutorial
+#oc create namespace tutorial
+
+
+cd istio-tutorial/customer
+./build.sh
+docker images | grep example
+
+# error -> vi  >> privileged: true
+============================
+          capabilities:
+            add:
+            - NET_ADMIN
+          privileged: true
+============================
+
+
+oc project default
+oc get all 
+#check router
+deploymentconfig.apps.openshift.io/router            1          1         1         config
+
+curl customer-tutorial.$(minishift ip).nip.io
+customer => I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference
+
 
 
 # apendix. minishift stop&delete
