@@ -52,6 +52,7 @@ minishift addon enable admin-user
 minishift config set openshift-version v3.11.0
 
 minishift start
+# 오래 걸리잖아 ~~!!!
 ```
 
 
