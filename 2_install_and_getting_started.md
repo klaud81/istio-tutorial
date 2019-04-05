@@ -64,7 +64,7 @@ echo "export PATH=\$PATH:$(dirname $(find $HOME/.minishift -name oc -type f))" >
 
 
 ## minishift에 로그인
-``bash
+```bash
 eval $(minishift oc-env)
 eval $(minishift docker-env)
 
