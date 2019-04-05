@@ -20,11 +20,12 @@ wget -O $HOME/minishift/minishift.tar.gz https://github.com/minishift/minishift/
 tar -xf $HOME/minishift/minishift.tar.gz -C $HOME/minishift
 ```
 
-## PATH에 openshift 클라이언트 명령을 내 보냅니다.
-```
-echo "export PATH=\$PATH:$(dirname $(find $HOME/.minishift -name oc -type f))" >> $HOME/.bashrc && \
+## PATH 추가
+```bash
+echo "export PATH=\$PATH:$HOME/minishift" >> $HOME/.bashrc && \
   source $HOME/.bashrc
 ```
+
 ## stern 설정(brew가 설치된 경로의 bin 패스 추가 )
 ```bash
 echo "PATH=/home/linuxbrew/.linuxbrew/bin:\$PATH" >> $HOME/.bashrc 
@@ -32,6 +33,7 @@ echo "export MANPATH=$(brew --prefix)/share/man:\$MANPATH" >> $HOME/.bashrc
 echo "export INFOPATH=$(brew --prefix)/share/info:\$INFOPATH" >> $HOME/.bashrc 
 source $HOME/.bashrc
 ```
+
 ## 설치확인 
 ```bash
 ./check.sh
@@ -50,6 +52,15 @@ minishift config set openshift-version v3.11.0
 minishift start
 ```
 
+
+## PATH에 openshift 클라이언트 명령을 내 보냅니다.
+```
+echo "export PATH=\$PATH:$(dirname $(find $HOME/.minishift -name oc -type f))" >> $HOME/.bashrc && \
+  source $HOME/.bashrc
+```
+
+
+
 ## minishift에 로그인
 ``bash
 eval $(minishift oc-env)
@@ -67,6 +78,7 @@ oc get node -o wide
 ```bash
 minishift stop
 minishift delete tutorial 
+minishift profile delete tutorial
 
 # appendix ui ref 
 minishift console
