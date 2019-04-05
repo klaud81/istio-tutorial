@@ -148,6 +148,20 @@ deploymentconfig.apps.openshift.io/router            1          1         1     
 curl customer-tutorial.$(minishift ip).nip.io
 customer => I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference
 
+cd ../preference/
+./build.sh
+docker images | grep example
+curl customer-tutorial.$(minishift ip).nip.io
+customer => 503 preference => I/O error on GET request for "http://recommendation:8080": recommendation; nested exception is java.net.UnknownHostException: recommendation
+
+cd ../recommendation/
+./build.sh
+docker images | grep example
+curl customer-tutorial.$(minishift ip).nip.io
+customer => preference => recommendation v1 from '749df8b687-w94vc': 1
+
+
+```
 
 
 # apendix. minishift stop&delete
