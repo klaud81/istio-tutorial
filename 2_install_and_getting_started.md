@@ -59,7 +59,7 @@ oc login -u system:admin https://$(minishift ip):8443
 ```
 
 ## node info
-``bash
+```bash
 oc get node -o wide
 ```
 
