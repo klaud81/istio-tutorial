@@ -10,7 +10,8 @@ sudo apt-get install linuxbrew-wrapper
 sudo systemctl enable virtualbox && systemctl start virtualbox
 
 ## add minishift
-```wget -O $HOME/minishift/minishift.tar.gz https://github.com/minishift/minishift/releases/download/v1.0.0/minishift-1.0.0-linux-amd64.tgz && \
+```bash
+#wget -O $HOME/minishift/minishift.tar.gz https://github.com/minishift/minishift/releases/download/v1.0.0/minishift-1.0.0-linux-amd64.tgz && \
 ```
 mkdir $HOME/minishift && \
 wget -O $HOME/minishift/minishift.tar.gz https://github.com/minishift/minishift/releases/download/v1.33.0/minishift-1.33.0-linux-amd64.tgz && \
