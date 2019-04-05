@@ -63,10 +63,10 @@ oc login -u system:admin https://$(minishift ip):8443
 oc get node -o wide
 ```
 
-# apendix. minishift delete/stop
+# apendix. minishift stop&delete
 ```bash
-minishift delete tutorial 
 minishift stop
+minishift delete tutorial 
 
 # appendix ui ref 
 minishift console
