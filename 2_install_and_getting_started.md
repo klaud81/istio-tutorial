@@ -118,7 +118,9 @@ oc expose svc istio-ingress
 
 oc get pods
 
-
+# source download and branch
+cd ..
+./source_downlod.sh
 
 
 
