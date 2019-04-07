@@ -129,6 +129,16 @@ oc adm policy add-scc-to-user privileged -z default -n tutorial
 
 cd istio-tutorial/customer
 ./build.sh
+=============================
+./mvnw clean package
+docker build -t example/customer .
+istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.yml
+oc apply -f istio_Deployment.yml -n tutorial
+oc create -f src/main/kubernetes/Service.yml -n tutorial
+oc expose service customer
+curl customer-tutorial.$(minishift ip).nip.io
+=============================
+
 docker images | grep example
 
 # error -> vi  >> privileged: true
