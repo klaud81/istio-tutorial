@@ -1,3 +1,4 @@
+wget -O $HOME/minishift/minishift.tar.gz https://github.com/minishift/minishift/releases/download/v1.33.0/minishift-1.33.0-
 
 # 기본 설치 및 준비사항들
 
