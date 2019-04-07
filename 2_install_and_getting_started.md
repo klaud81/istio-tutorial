@@ -132,6 +132,7 @@ cd istio-tutorial/customer
 =============================
 ./mvnw clean package
 docker build -t example/customer .
+docker images | grep example
 istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.yml
 oc apply -f istio_Deployment.yml -n tutorial
 oc create -f src/main/kubernetes/Service.yml -n tutorial
@@ -139,7 +140,7 @@ oc expose service customer
 curl customer-tutorial.$(minishift ip).nip.io
 =============================
 
-docker images | grep example
+
 
 # error -> vi  >> privileged: true
 ============================
@@ -150,7 +151,6 @@ docker images | grep example
 ============================
 
 
-oc project default
 oc get all 
 #check router
 deploymentconfig.apps.openshift.io/router            1          1         1         config
