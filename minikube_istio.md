@@ -66,7 +66,7 @@ oc new-project tutorial
 oc adm policy add-scc-to-user privileged -z default -n tutorial
 #oc create namespace tutorial
 
-
+```bash
 cd istio-tutorial/customer
 =============================
 ./mvnw clean package
@@ -74,8 +74,21 @@ docker build -t example/customer .
 docker images | grep example
 #istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.yml
 kubectl apply -f <(istioctl kube-inject -f src/main/kubernetes/Deployment.yml)
+kubectl get pods -w
+# STATUS   Running  customer
 kubectl apply -f src/main/kubernetes/Service.yml
+kubectl get svc
+# TYPE ClusterIP  customer
 
+kubectl apply -f customer-virtual.yml
+
+curl http://192.168.99.96:80/customer
+curl http://192.168.99.96:80
+#customer => I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference
+
+
+
+```
 
 
 # error -> vi  >> privileged: true
