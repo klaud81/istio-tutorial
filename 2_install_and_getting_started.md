@@ -20,7 +20,7 @@ brew --prefix
 ```
 
 
-## intstall minishift
+## install minishift
 ```bash
 # minishift 1.0.0 version
 #wget -O $HOME/minishift/minishift.tar.gz https://github.com/minishift/minishift/releases/download/v1.0.0/minishift-1.0.0-linux-amd64.tgz && \
