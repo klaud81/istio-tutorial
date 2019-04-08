@@ -94,8 +94,9 @@ curl -L https://github.com/istio/istio/releases/download/0.5.1/istio-0.5.1-linux
 # Both:
 cd istio-0.5.1
 export ISTIO_HOME=`pwd`
-export PATH=$ISTIO_HOME/bin:$PATH
-
+echo "export PATH=\$PATH:$ISTIO_HOME/bin" >> $HOME/.bashrc && \
+  source $HOME/.bashrc
+  
 oc adm policy add-scc-to-user anyuid -z istio-ingress-service-account \
  -n istio-system
 oc adm policy add-scc-to-user anyuid -z default -n istio-system
