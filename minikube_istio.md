@@ -24,9 +24,8 @@ sudo mv linux-amd64/helm /usr/local/bin/helm
 ```
 ## Download Istio(1.0.5)
 ```bash
-git clone https://github.com/istio/istio.git
-cd istio/
-git checkout tags/1.0.5
+./downloadIstio.sh
+cd istio-1.0.5/
 sudo cp bin/istioctl /usr/local/bin
 ```
 ## Install Istio(1.0.5)
