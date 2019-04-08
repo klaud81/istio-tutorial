@@ -19,13 +19,13 @@ curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/miniku
   && chmod +x minikube
 sudo cp minikube /usr/local/bin && rm minikube  
 
-minikube start --memory=8192 --cpus=4
-minikube start --memory=8192 --cpus=4
-    
-```
+minikube start --memory=8192 --cpus=4 --cache-images=false
 
 eval $(minikube docker-env)
- 
+
+```
+
+
 ## Install Helm(2.12.1)
 ```bash
 wget https://storage.googleapis.com/kubernetes-helm/helm-v2.12.1-linux-amd64.tar.gz
@@ -33,7 +33,7 @@ tar -xzvf helm-v2.12.1-linux-amd64.tar.gz
 chmod +x linux-amd64/helm
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
-helm init
+
 
 ```
 ## Download Istio(1.0.5)
@@ -42,20 +42,54 @@ helm init
 cd istio-1.0.5/
 sudo cp bin/istioctl /usr/local/bin
 ```
-## Install Istio(1.0.5)
+## Install config Istio(1.0.5)
 ```bash
+
 helm template install/kubernetes/helm/istio --name istio --namespace istio-system > $HOME/istio.yaml
 kubectl create namespace istio-system
 kubectl apply -f $HOME/istio.yaml
-kubectl get pods -n istio-system
+kubectl get pods -n istio-system -w
+
+# STATUS Running or Completed 2
+
+```
+# label the namespace for injection
+```bash
+kubectl label namespace default istio-injection=enabled
+
+kubectl get pods --namespace=istio-system
+
+kubectl get service -n istio-system istio-ingressgateway
+
+#NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP                                                                                                             
+istio-ingressgateway   LoadBalancer   10.104.226.154   <pending>
 ```
 
-./source_downlod.sh
+# install MetalLB
+```bash
+kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.7.3/manifests/metallb.yaml
 
-oc new-project tutorial
-oc adm policy add-scc-to-user privileged -z default -n tutorial
-#oc create namespace tutorial
+kubectl get pods -n metallb-system -w
+# STATUS Running 2 (controller, speaker)
 
+minikube ip
+#config.yml file 192.168.99.106
+kubectl apply -f config.yml       
+==========
+protocol: layer2
+      addresses:
+      - 192.168.99.106/28
+==========
+
+kubectl get service -n istio-system istio-ingressgateway
+
+#NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP                                                                                                             
+istio-ingressgateway   LoadBalancer   10.104.226.154   192.168.99.96
+
+```
+
+
+# customer example
 ```bash
 cd istio-tutorial/customer
 =============================
@@ -102,7 +136,7 @@ curl http://192.168.99.96:80
 ```
 
 
-#recommendation
+# recommendation example
 ```bash
 cd ../recommendation/
 ./mvnw clean package
