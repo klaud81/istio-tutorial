@@ -1,3 +1,12 @@
+## docker install :
+```bash
+# https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+```
+
 ## Download Install: Kubectl(1.13.0)
 ```bash
 curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kubectl
@@ -10,17 +19,22 @@ curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/miniku
   && chmod +x minikube
 sudo cp minikube /usr/local/bin && rm minikube  
 
-minikube start --memory=8192 --cpus=4 --kubernetes-version=v1.13.0 \
-    --extra-config=controller-manager.cluster-signing-cert-file="/var/lib/localkube/certs/ca.crt" \
-    --extra-config=controller-manager.cluster-signing-key-file="/var/lib/localkube/certs/ca.key" \
-    --vm-driver='virtualbox'
+minikube start --memory=8192 --cpus=4
+minikube start --memory=8192 --cpus=4
+    
 ```
+
+eval $(minikube docker-env)
+ 
 ## Install Helm(2.12.1)
 ```bash
 wget https://storage.googleapis.com/kubernetes-helm/helm-v2.12.1-linux-amd64.tar.gz
 tar -xzvf helm-v2.12.1-linux-amd64.tar.gz
 chmod +x linux-amd64/helm
 sudo mv linux-amd64/helm /usr/local/bin/helm
+
+helm init
+
 ```
 ## Download Istio(1.0.5)
 ```bash
@@ -58,7 +72,12 @@ cd istio-tutorial/customer
 ./mvnw clean package
 docker build -t example/customer .
 docker images | grep example
-istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.yml
+#istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.yml
+kubectl apply -f <(istioctl kube-inject -f src/main/kubernetes/Deployment.yml)
+kubectl apply -f src/main/kubernetes/Service.yml
+
+
+
 # error -> vi  >> privileged: true
 ============================
           capabilities:
@@ -68,7 +87,7 @@ istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.ym
 ============================
 
 oc apply -f istio_Deployment.yml -n tutorial
-oc create -f src/main/kubernetes/Service.yml -n tutorial
+kubectl apply -f src/main/kubernetes/Service.yml
 oc expose service customer
 
 curl customer-tutorial.$(minishift ip).nip.io
