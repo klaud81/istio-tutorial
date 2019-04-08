@@ -10,7 +10,7 @@ curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/miniku
   && chmod +x minikube
 sudo cp minikube /usr/local/bin && rm minikube  
 
-minikube start --memory=8192 --cpus=4 --kubernetes-version=v1.10.0 \
+minikube start --memory=8192 --cpus=4 --kubernetes-version=v1.13.0 \
     --extra-config=controller-manager.cluster-signing-cert-file="/var/lib/localkube/certs/ca.crt" \
     --extra-config=controller-manager.cluster-signing-key-file="/var/lib/localkube/certs/ca.key" \
     --vm-driver='virtualbox'
@@ -20,7 +20,7 @@ minikube start --memory=8192 --cpus=4 --kubernetes-version=v1.10.0 \
 wget https://storage.googleapis.com/kubernetes-helm/helm-v2.12.1-linux-amd64.tar.gz
 tar -xzvf helm-v2.12.1-linux-amd64.tar.gz
 chmod +x linux-amd64/helm
-mv linux-amd64/helm /usr/local/bin/helm
+sudo mv linux-amd64/helm /usr/local/bin/helm
 ```
 ## Download Istio(1.0.5)
 ```bash
