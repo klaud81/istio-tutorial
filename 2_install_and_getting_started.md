@@ -15,6 +15,8 @@ sudo apt-get install linux-headers-$(uname -r|sed 's,[^-]*-[^-]*-,,') virtualbox
 sudo apt-get install siege
 sudo apt-get install linuxbrew-wrapper
 sudo systemctl enable virtualbox && systemctl start virtualbox
+brew --prefix
+
 ```
 
 
@@ -36,9 +38,9 @@ echo "export PATH=\$PATH:$HOME/minishift" >> $HOME/.bashrc && \
 
 ## stern 설정(brew가 설치된 경로의 bin 패스 추가 )
 ```bash
-echo "PATH=/home/linuxbrew/.linuxbrew/bin:\$PATH" >> $HOME/.bashrc 
-echo "export MANPATH=$(brew --prefix)/share/man:\$MANPATH" >> $HOME/.bashrc 
-echo "export INFOPATH=$(brew --prefix)/share/info:\$INFOPATH" >> $HOME/.bashrc 
+echo "export PATH=/home/linuxbrew/.linuxbrew/bin:\$PATH" >> $HOME/.bashrc 
+echo "export MANPATH=/home/linuxbrew/.linuxbrew/share/man:\$MANPATH" >> $HOME/.bashrc 
+echo "export INFOPATH=/home/linuxbrew/.linuxbrew/share/info:\$INFOPATH" >> $HOME/.bashrc 
 source $HOME/.bashrc
 ```
 
