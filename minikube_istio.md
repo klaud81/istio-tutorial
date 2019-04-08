@@ -45,6 +45,62 @@ kubectl get pods
 kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
 kubectl get gateway
 ```
+
+./source_downlod.sh
+
+oc new-project tutorial
+oc adm policy add-scc-to-user privileged -z default -n tutorial
+#oc create namespace tutorial
+
+
+cd istio-tutorial/customer
+=============================
+./mvnw clean package
+docker build -t example/customer .
+docker images | grep example
+istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.yml
+# error -> vi  >> privileged: true
+============================
+          capabilities:
+            add:
+            - NET_ADMIN
+          privileged: true
+============================
+
+oc apply -f istio_Deployment.yml -n tutorial
+oc create -f src/main/kubernetes/Service.yml -n tutorial
+oc expose service customer
+
+curl customer-tutorial.$(minishift ip).nip.io
+customer => I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference
+
+cd ../preference/
+./mvnw clean package
+docker build -t example/preference .
+docker images | grep preference
+
+istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.yml
+# error -> vi  >> privileged: true
+============================
+          capabilities:
+            add:
+            - NET_ADMIN
+          privileged: true
+============================
+oc apply -f istio_Deployment.yml -n tutorial
+oc create -f src/main/kubernetes/Service.yml -n tutorial
+oc expose service preference
+
+curl customer-tutorial.$(minishift ip).nip.io
+
+customer => 503 preference => I/O error on GET request for "http://recommendation:8080": recommendation; nested exception is java.net.UnknownHostException: recommendation
+
+cd ../recommendation/
+./build.sh
+docker images | grep example
+curl customer-tutorial.$(minishift ip).nip.io
+customer => preference => recommendation v1 from '749df8b687-w94vc': 1
+
 ## Testing the App
 ```bash
 # URL will be something like: 192.168.99.100:31380/productpage 
