@@ -9,6 +9,11 @@ or
 https://github.com/redhat-developer-demos/istio-tutorial/blob/master/documentation/modules/ROOT/pages/1setup.adoc
 
 
+## java 설치
+```bash
+sudo apt install openjdk-8-jdk -y
+```
+
 ## install 기본 설치 파일
 ```bash
 sudo apt-get install linux-headers-$(uname -r|sed 's,[^-]*-[^-]*-,,') virtualbox
