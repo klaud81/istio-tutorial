@@ -23,6 +23,10 @@ minikube start --memory=8192 --cpus=4 --cache-images=false
 
 eval $(minikube docker-env)
 
+# delete option
+sudo minikube delete
+rm -rf ~/.kube ~/.minikube
+
 ```
 
 
