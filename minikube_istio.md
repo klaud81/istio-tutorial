@@ -49,16 +49,6 @@ kubectl create namespace istio-system
 kubectl apply -f $HOME/istio.yaml
 kubectl get pods -n istio-system
 ```
-## Run Bookinfo App
-```bash
-cd istio/
-kubectl apply -f <(istioctl kube-inject -f samples/bookinfo/platform/kube/bookinfo.yaml)
-kubectl get services
-kubectl get pods
-## You need to wait to have all pods running this take some time
-kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
-kubectl get gateway
-```
 
 ./source_downlod.sh
 
@@ -90,48 +80,44 @@ curl http://192.168.99.96:80
 
 ```
 
-
-# error -> vi  >> privileged: true
-============================
-          capabilities:
-            add:
-            - NET_ADMIN
-          privileged: true
-============================
-
-oc apply -f istio_Deployment.yml -n tutorial
-kubectl apply -f src/main/kubernetes/Service.yml
-oc expose service customer
-
-curl customer-tutorial.$(minishift ip).nip.io
-customer => I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference
-
+# preference example
+```bash
 cd ../preference/
 ./mvnw clean package
 docker build -t example/preference .
 docker images | grep preference
 
-istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.yml
-# error -> vi  >> privileged: true
-============================
-          capabilities:
-            add:
-            - NET_ADMIN
-          privileged: true
-============================
-oc apply -f istio_Deployment.yml -n tutorial
-oc create -f src/main/kubernetes/Service.yml -n tutorial
-oc expose service preference
+#istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.yml
+kubectl apply -f <(istioctl kube-inject -f src/main/kubernetes/Deployment.yml)
+kubectl get pods -w
+# STATUS   Running  preference
+kubectl apply -f src/main/kubernetes/Service.yml
+kubectl get svc
+# TYPE ClusterIP  preference
 
-curl customer-tutorial.$(minishift ip).nip.io
 
-customer => 503 preference => I/O error on GET request for "http://recommendation:8080": recommendation; nested exception is java.net.UnknownHostException: recommendation
+curl http://192.168.99.96:80/customer
+curl http://192.168.99.96:80
+#customer => 503 preference => I/O error on GET request for "http://recommendation:8080": recommendation; nested exception is java.net.UnknownHostException: recommendation
+```
 
+
+#recommendation
+```bash
 cd ../recommendation/
-./build.sh
-docker images | grep example
-curl customer-tutorial.$(minishift ip).nip.io
-customer => preference => recommendation v1 from '749df8b687-w94vc': 1
+./mvnw clean package
+docker build -t example/recommendation:v1 .
+kubectl apply -f <(istioctl kube-inject -f src/main/kubernetes/Deployment.yml)
+kubectl get pods -w
+# STATUS   Running  recommendation
+kubectl apply -f src/main/kubernetes/Service.yml
+kubectl get svc
+# TYPE ClusterIP  recommendation
+
+curl http://192.168.99.96:80/customer
+curl http://192.168.99.96:80
+customer => preference => recommendation v1 from '679dfdf957-ctkfr': 1
+```
 
 ## Testing the App
 ```bash
