@@ -73,6 +73,9 @@ minishift start
 ```
 echo "export PATH=\$PATH:$(dirname $(find $HOME/.minishift -name oc -type f))" >> $HOME/.bashrc && \
   source $HOME/.bashrc
+  
+# check oc version
+oc version
 ```
 
 
@@ -113,6 +116,8 @@ oc create -f install/kubernetes/istio.yaml
 
 oc project istio-system
 oc get pods -w
+# check all STATUS
+RUNNING
 
 oc apply -f install/kubernetes/addons/prometheus.yaml
 oc apply -f install/kubernetes/addons/grafana.yaml
@@ -124,7 +129,9 @@ oc expose svc grafana
 oc expose svc prometheus
 oc expose svc istio-ingress
 
-oc get pods
+oc get pods -w
+# check all STATUS
+RUNNING
 
 # source download and branch
 cd ..
@@ -136,20 +143,11 @@ oc adm policy add-scc-to-user privileged -z default -n tutorial
 
 
 cd istio-tutorial/customer
-./build.sh
 =============================
 ./mvnw clean package
 docker build -t example/customer .
 docker images | grep example
 istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.yml
-oc apply -f istio_Deployment.yml -n tutorial
-oc create -f src/main/kubernetes/Service.yml -n tutorial
-oc expose service customer
-curl customer-tutorial.$(minishift ip).nip.io
-=============================
-
-
-
 # error -> vi  >> privileged: true
 ============================
           capabilities:
@@ -158,18 +156,32 @@ curl customer-tutorial.$(minishift ip).nip.io
           privileged: true
 ============================
 
-
-oc get all 
-#check router
-deploymentconfig.apps.openshift.io/router            1          1         1         config
+oc apply -f istio_Deployment.yml -n tutorial
+oc create -f src/main/kubernetes/Service.yml -n tutorial
+oc expose service customer
 
 curl customer-tutorial.$(minishift ip).nip.io
 customer => I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference
 
 cd ../preference/
-./build.sh
-docker images | grep example
+./mvnw clean package
+docker build -t example/preference .
+docker images | grep preference
+
+istioctl kube-inject -f src/main/kubernetes/Deployment.yml > istio_Deployment.yml
+# error -> vi  >> privileged: true
+============================
+          capabilities:
+            add:
+            - NET_ADMIN
+          privileged: true
+============================
+oc apply -f istio_Deployment.yml -n tutorial
+oc create -f src/main/kubernetes/Service.yml -n tutorial
+oc expose service preference
+
 curl customer-tutorial.$(minishift ip).nip.io
+
 customer => 503 preference => I/O error on GET request for "http://recommendation:8080": recommendation; nested exception is java.net.UnknownHostException: recommendation
 
 cd ../recommendation/
