@@ -32,7 +32,7 @@ tar -xf $HOME/minishift/minishift.tar.gz -C $HOME/minishift
 
 ## PATH 추가
 ```bash
-echo "export PATH=\$PATH:$HOME/minishift" >> $HOME/.bashrc && \
+echo "export PATH=\$PATH:$HOME/minishift/minishift-1.33.0-linux-amd64" >> $HOME/.bashrc && \
   source $HOME/.bashrc
 ```
 
