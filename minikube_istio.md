@@ -195,3 +195,6 @@ xdg-open "https://$(minikube ip):$(kubectl -n istio-system get service kiali -o 
 kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=prometheus -o jsonpath='{.items[0].metadata.name}') 9090:9090
 xdg-open http://localhost:9090/graph?g0.range_input=1h&g0.expr=istio_request_bytes_count&g0.tab=0
 ```
+
+
+ref: https://medium.com/@emirmujic/istio-and-metallb-on-minikube-242281b1134b
