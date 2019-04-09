@@ -157,6 +157,24 @@ curl http://192.168.99.96:80
 customer => preference => recommendation v1 from '679dfdf957-ctkfr': 1
 ```
 
+
+# recommendation v2
+```bash
+mvn clean package
+docker build -t example/recommendation:v1 .
+docker build -t example/recommendation:v2 .
+docker images | grep recommendation
+kubectl apply -f <(istioctl kube-inject -f ../../kubernetes/Deployment-v2.yml)
+
+
+curl http://192.168.99.96:80/customer
+while true; do curl http://192.168.99.96:80/customer; sleep .5; done
+
+```
+
+
+
+
 ## Testing the App
 ```bash
 # URL will be something like: 192.168.99.100:31380/productpage 
