@@ -354,7 +354,7 @@ istioctl delete virtualservice recommendation
 ```
 
 
-# HTTP Error 503, Delay, Retry
+# HTTP Error 503, Delay, Retry, Timeout
 ```bash
 # HTTP Error 503 
 kubectl apply -f ../../../istiofiles/recommendation-destination-rule.yml
@@ -392,8 +392,108 @@ kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|he
 # random load-balancing between v1 and v2
 while true; do curl http://192.168.99.96:80/customer; sleep .5; done
 
+# Timeout
+kubectl apply -f ../../../istiofiles/recommendation-v2_slow.yml
+# confirm slow v2
+while true; do time curl http://192.168.99.96/customer ; sleep .5; done
+
+
+kubectl apply -f ../../../istiofiles/recommendation-virtual-service-timeout.yml
+while true; do time curl http://192.168.99.96/customer ; sleep .5; done
+
+## clean up
+### Replace the recommendation:v2 slow version by the standard one.
+kubectl apply -f ../../../istiofiles/recommendation-v2.yml
+### Delete the timeout rule.
+kubectl delete -f ../../../istiofiles/recommendation-virtual-service-timeout.yml
 
 ```
+
+## Circuit Breaker
+```bash
+# v2 slow
+kubectl apply -f ../../../istiofiles/recommendation-v2_slow.yml
+# v1, v2 destination-rule 설정-라벨링
+kubectl apply -f ../../../istiofiles/recommendation-destination-rule-v1-v2.yml
+# 부하분산 트래픽 설정 virtual service
+kubectl apply -f ../../../istiofiles/recommendation-virtual-service-v1_and_v2_50_50.yml
+# Test 1: Load test without circuit breaker - siege 를 이용한 부하 테스트
+docker run --rm funkygibbon/siege siege -r 2 -c 20 -v http://192.168.99.96/customer
+# Test 2: Load test with circuit breaker - - siege 를 이용한 부하 테스트
+kubectl apply -f ../../../istiofiles/recommendation-destination-rule-cb_policy_version.yml
+docker run --rm funkygibbon/siege siege -r 2 -c 20 -v http://192.168.99.96/customer
+
+## clean up
+### Replace the slow version by the standard one
+kubectl apply -f ../../../istiofiles/recommendation-v2.yml
+
+kubectl delete DestinationRule recommendation
+
+kubectl delete VirtualService recommendation
+
+```
+
+
+## Pool Ejection
+```bash
+# destinationrule and virtualservice 50/50
+kubectl apply -f ../../../istiofiles/recommendation-destination-rule-v1-v2.yml
+
+kubectl apply -f ../../../istiofiles/recommendation-virtual-service-v1_and_v2_50_50.yml
+# v2 Scale up 2
+kubectl scale deployment recommendation-v2 --replicas=2
+
+# Test 1: Load test without failing instances
+## Throw some requests at the customer endpoint:
+
+while true; do curl http://192.168.99.96/customer; sleep .5; done
+
+# Test 2: Load test with failing instance
+## Let’s get the name of the pods from recommendation v2:
+
+kubectl get pods -l app=recommendation,version=v2
+# v2 503 misbehave
+kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation -- curl 127.0.0.1:8080/misbehave
+
+## The error rate is 25 %. Because 1/2 of v2 is in error, v2 is 50% of traffic, hence 1/2 of 50% is in error which is equal to 25%.
+while true; do curl http://192.168.99.96/customer; sleep .5; done
+
+
+# Test 3: Load test with failing instance and with pool ejection
+## error 1개 검출 될때, 100% 로 15초동안 제거됨, 검사주기는 5초
+kubectl apply -f ../../../istiofiles/recommendation-destination-rule-cb_policy_pool_ejection.yml
+while true; do curl http://192.168.99.96/customer; sleep .5; done
+
+# Test 4: Ultimate resilience with retries, circuit breaker, and pool ejection
+## Circuit Breaker: 인스터스에 대한 여러개의 동시 요청을 방지
+## Pool Ejection: 응답 인스턴스 폴에서 실패한 인스턴스를 제거
+## Retries: 풀에 배출 발생한 경우를 대비하여 다른 인스턴스로 요청을 전달
+kubectl apply -f ../../../istiofiles/fault-injection/retry/recommendation-virtual-service-v2_retry.yml
+while true; do curl http://192.168.99.96/customer; sleep .5; done
+
+
+
+## clean up
+
+kubectl scale deployment recommendation-v2 --replicas=1
+kubectl delete pod -l app=recommendation,version=v2
+
+kubectl delete virtualservice recommendation
+kubectl delete destinationrule recommendation
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Testing the App
 ```bash
