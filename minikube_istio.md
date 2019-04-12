@@ -434,7 +434,8 @@ kubectl delete VirtualService recommendation
 ```
 
 
-## Pool Ejection
+## Pool Ejection and Circuit Breaker + Pool Ejection + Retries
+
 ```bash
 # destinationrule and virtualservice 50/50
 kubectl apply -f ../../../istiofiles/recommendation-destination-rule-v1-v2.yml
