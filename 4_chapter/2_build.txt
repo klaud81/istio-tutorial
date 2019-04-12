@@ -1,8 +1,0 @@
-cd recommendation
-mvn clean package
-docker build -t example/recommendation:v1 .
-
-kubectl create namespace tutorial
-
-kubectl apply -f <(istioctl kube-inject -f \
-src/main/kubernetes/Deployment.yml) -n tutorial
