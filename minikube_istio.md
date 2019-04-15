@@ -52,14 +52,14 @@ sudo mv linux-amd64/helm /usr/local/bin/helm
 
 
 ```
-## Download Istio(1.0.2)
+## Download Istio(1.0.5)
 ```bash
-curl -sL https://github.com/istio/istio/releases/download/1.0.2/istio-1.0.2-linux.tar.gz | tar xz
-cd istio-1.0.2
+curl -sL https://github.com/istio/istio/releases/download/1.0.5/istio-1.0.5-linux.tar.gz | tar xz
+cd istio-1.0.5
 sudo cp bin/istioctl /usr/local/bin
 ```
 
-## Install config Istio(1.0.2)
+## Install config Istio(1.0.5)
 ```bash
 ## 방법 1 - kube menifest 를 이용하는 방법 
 helm template install/kubernetes/helm/istio --name istio --namespace istio-system > $HOME/istio.yaml
@@ -151,6 +151,12 @@ kubectl get service -n istio-system istio-ingressgateway
 istio-ingressgateway   LoadBalancer   10.104.226.154   192.168.99.96
 
 IP=$(kubectl get service -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+## metalLB 
+kubectl get services kube-dns --namespace=kube-system
+kubectl exec -it $(kubectl get pods|grep customer|awk '{ print $1 }'|head -1) -c customer -- /bin/bash
+printenv | grep SERVICE
+curl http://customer:8080
 
 ```
 
