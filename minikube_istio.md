@@ -216,6 +216,8 @@ kubectl get po -w
 
 curl http://192.168.99.96:80/customer
 curl http://192.168.99.96:80
+# mac
+curl http://customer:8080
 #customer => UnknownHostException: preference
 
 
@@ -236,6 +238,8 @@ cd -
 
 curl http://192.168.99.96:80/customer
 curl http://192.168.99.96:80
+# mac
+curl http://customer:8080
 #customer => Error: 503 - preference => UnknownHostException: recommendation
 ```
 
@@ -252,6 +256,8 @@ kubectl get po,svc
 kubectl get po -w
 
 curl http://192.168.99.96:80/customer
+# mac
+curl http://customer:8080
 customer => preference => recommendation v1 from '6b4df7d9d9-7x2n8': 1
 ```
 
@@ -279,6 +285,8 @@ while true; do curl http://192.168.99.96:80/customer; sleep .5; done
 # v1 로만 패킷이 가도록 재설정
 kubectl replace -f ../../../istiofiles/virtual-service-recommendation-v1.yml 
 while true; do curl http://192.168.99.96:80/customer; sleep .5; done
+# mac
+while true; do curl http://customer:8080; sleep .5; done
 
 ## istio 관련 확인 명령어들
 # istio ingressgateway logs 확인
